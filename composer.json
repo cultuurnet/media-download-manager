@@ -1,0 +1,39 @@
+{
+    "name": "cultuurnet/media-download-manager",
+    "description": "Download Media to different platforms",
+    "type": "project",
+    "license": "Apache-2.0",
+    "authors": [],
+    "require": {
+        "silex/silex": "~1.3",
+        "deralex/yaml-config-service-provider": "~1.0",
+        "knplabs/console-service-provider": "~1.0",
+        "monolog/monolog": "~1.11",
+        "league/flysystem": "~1.0",
+        "league/flysystem-aws-s3-v3": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.7",
+        "escapestudios/symfony2-coding-standard": "~2.9",
+        "squizlabs/php_codesniffer": "~2.5.1",
+        "phing/phing": "~2.14",
+        "satooshi/php-coveralls": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CultuurNet\\MediaDownloadManager\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CultuurNet\\MediaDownloadManager\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.x-dev"
+        }
+    }
+}
