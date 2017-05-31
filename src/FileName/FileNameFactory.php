@@ -15,8 +15,7 @@ class FileNameFactory implements FileNameFactoryInterface
         StringLiteral $itemName,
         StringLiteral $zipCode,
         StringLiteral $copyright
-    )
-    {
+    ) {
 
     }
 }
