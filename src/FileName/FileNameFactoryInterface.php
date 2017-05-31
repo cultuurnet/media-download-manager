@@ -19,4 +19,10 @@ interface FileNameFactoryInterface
         StringLiteral $zipCode,
         StringLiteral $copyright
     );
+
+    /**
+     * @param $originalFileName
+     * @return StringLiteral
+     */
+    public function generateExtension($originalFileName);
 }

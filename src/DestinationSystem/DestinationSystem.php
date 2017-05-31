@@ -21,7 +21,6 @@ class DestinationSystem implements DestinationSystemInterface
      */
     protected $adaptor;
 
-
     /**
      * DestinationSystem constructor.
      * @param FileNameFactoryInterface $fileNameFactory
