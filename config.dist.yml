@@ -1,2 +1,10 @@
 debug: false
 bootstrap: []
+
+source_url:
+  base: https://search-acc.uitdatabank.be/offers
+  parameters:
+    labels: \"owner-omd-2107\"
+    embed: true
+    availableFrom: \*
+    availableTo: \*

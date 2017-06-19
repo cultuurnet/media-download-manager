@@ -2,16 +2,42 @@
 
 namespace CultuurNet\MediaDownloadManager\OriginSystem;
 
-use ValueObjects\Number\Integer as IntegerLiteral;
+use ValueObjects\Web\Url;
 
 class OriginSystem implements OriginSystemInterface
 {
 
     /**
-     * OriginSystem constructor.
-     * @param IntegerLiteral $limit
+     * @var Url
      */
-    public function __construct(IntegerLiteral $limit)
+    protected $baseUrl;
+
+    /**
+     * @var array
+     */
+    protected $parameters;
+
+    /**
+     * OriginSystem constructor.
+     * @param Url $baseUrl
+     * @param array $parameters
+     */
+    public function __construct(Url $baseUrl, array $parameters)
     {
+        $this->baseUrl = $baseUrl;
+        $this->parameters = $parameters;
+    }
+
+    /**
+     * @return Url
+     */
+    public function getSearchUrl()
+    {
+        $urlString = $this->baseUrl . '/?';
+        $parameterString = '';
+        foreach ($this->parameters as $key => $value) {
+            $parameterString .= $key . '=' . $value . '&';
+        }
+        return Url::fromNative($urlString . $parameterString);
     }
 }
