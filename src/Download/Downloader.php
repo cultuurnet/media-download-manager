@@ -26,7 +26,8 @@ class Downloader implements DownloaderInterface
      * @param Url $url
      * @return StringLiteral
      */
-    private function getBaseLink(Url $url){
+    private function getBaseLink(Url $url)
+    {
         return new StringLiteral($url->getScheme() . '://' . $url->getDomain());
     }
 }

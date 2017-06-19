@@ -34,30 +34,20 @@ class Parser implements ParserInterface
         $contents = utf8_encode($contents);
         $results = json_decode($contents, true);
 
-        $ipp = $results['itemsPerPage'];
-        $ti = $results['totalItems'];
-        if ($ti < $ipp) {
-            foreach ($results['member'] as $member) {
-                $name = $member['name']['nl'];
-                $postalCode = $member['location']['address']['postalCode'];
-                if ($member['mediaObject']) {
-                    foreach ($member['mediaObject'] as $media) {
-                        $contentUrl = $media['contentUrl'];
-                        $copyrightHolder = $media['copyrightHolder'];
-                        $fileName = $this->fileNameFactory->generateFileName(
-                            new StringLiteral($contentUrl),
-                            new StringLiteral($name),
-                            new StringLiteral($postalCode),
-                            new StringLiteral($copyrightHolder)
-                        );
-                        $this->destinationSystem->saveFile(
-                            Url::fromNative($contentUrl),
-                            $fileName
-                        );
-                    }
-                }
-            }
+        $itemsPerPage = 30;
+        $totalItems = 95;
+
+        $start = 0;
+        while ($start < $totalItems) {
+            $contents = file_get_contents(Url::fromNative($this->originSystem->getSearchUrl() . 'start=' . $start));
+            $contents = utf8_encode($contents);
+            $results = json_decode($contents, true);
+
+            $this->processResults($results);
+
+            $start = $start + $itemsPerPage;
         }
+
     }
 
     /**
@@ -74,5 +64,32 @@ class Parser implements ParserInterface
         $this->fileNameFactory = $fileNameFactory;
         $this->originSystem = $originSystem;
         $this->destinationSystem = $destinationSystem;
+    }
+
+    /**
+     * @param array $results
+     */
+    private function processResults(array $results)
+    {
+        foreach ($results['member'] as $member) {
+            $name = $member['name']['nl'];
+            $postalCode = $member['location']['address']['postalCode'];
+            if ($member['mediaObject']) {
+                foreach ($member['mediaObject'] as $media) {
+                    $contentUrl = $media['contentUrl'];
+                    $copyrightHolder = $media['copyrightHolder'];
+                    $fileName = $this->fileNameFactory->generateFileName(
+                        new StringLiteral($contentUrl),
+                        new StringLiteral($name),
+                        new StringLiteral($postalCode),
+                        new StringLiteral($copyrightHolder)
+                    );
+                    $this->destinationSystem->saveFile(
+                        Url::fromNative($contentUrl),
+                        $fileName
+                    );
+                }
+            }
+        }
     }
 }
