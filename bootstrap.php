@@ -1,9 +1,12 @@
 <?php
 
+use CultuurNet\MediaDownloadManager\DestinationSystem\DestinationSystem;
+use CultuurNet\MediaDownloadManager\Download\Downloader;
 use CultuurNet\MediaDownloadManager\FileName\FileNameFactory;
 use CultuurNet\MediaDownloadManager\OriginSystem\OriginSystem;
 use CultuurNet\MediaDownloadManager\Parser\Parser;
 use DerAlex\Silex\YamlConfigServiceProvider;
+use League\Flysystem\Adapter\Local;
 use Silex\Application;
 use ValueObjects\Web\Url;
 
@@ -49,10 +52,29 @@ $app['mdm.origin'] = $app->share(
     }
 );
 
+$app['mdm.downloader'] = $app->share(
+    function() {
+        return new Downloader();
+    }
+);
+
+$app['mdm.destination'] = $app->share(
+    function(Application $app) {
+        $adapter = new Local('/home/jonas/OMD');
+
+        return new DestinationSystem(
+            $app['mdm.downloader'],
+            $adapter
+        );
+    }
+);
+
 $app['mdm.parser'] = $app->share(
     function (Application $app) {
-        return new Parser($app['mdm.file_name_factory'],
-            $app['mdm.origin']
+        return new Parser(
+            $app['mdm.file_name_factory'],
+            $app['mdm.origin'],
+            $app['mdm.destination']
         );
     }
 );

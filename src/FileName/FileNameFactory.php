@@ -24,7 +24,7 @@ class FileNameFactory implements FileNameFactoryInterface
             $copyright = StringLiteral::fromNative(substr($copyright->toNative(), 0, 100));
         }
 
-        return $itemName . ' - ' . $zipCode . ' - ' . $copyright . $extension;
+        return StringLiteral::fromNative($itemName . ' - ' . $zipCode . ' - ' . $copyright . $extension);
     }
 
     /**

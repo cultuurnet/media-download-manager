@@ -2,6 +2,7 @@
 
 namespace CultuurNet\MediaDownloadManager\Parser;
 
+use CultuurNet\MediaDownloadManager\DestinationSystem\DestinationSystemInterface;
 use CultuurNet\MediaDownloadManager\FileName\FileNameFactoryInterface;
 use CultuurNet\MediaDownloadManager\OriginSystem\OriginSystemInterface;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -15,9 +16,14 @@ class Parser implements ParserInterface
     protected $fileNameFactory;
 
     /**
-     * @var ParserInterface
+     * @var OriginSystemInterface
      */
     protected $originSystem;
+
+    /**
+     * @var DestinationSystemInterface
+     */
+    protected $destinationSystem;
 
     /**
      * @inheritdoc
@@ -44,7 +50,10 @@ class Parser implements ParserInterface
                             new StringLiteral($postalCode),
                             new StringLiteral($copyrightHolder)
                         );
-                        echo $fileName;
+                        $this->destinationSystem->saveFile(
+                            Url::fromNative($contentUrl),
+                            $fileName
+                        );
                     }
                 }
             }
@@ -55,12 +64,15 @@ class Parser implements ParserInterface
      * Parser constructor.
      * @param FileNameFactoryInterface $fileNameFactory
      * @param OriginSystemInterface $originSystem
+     * @param DestinationSystemInterface $destinationSystem
      */
     public function __construct(
         FileNameFactoryInterface $fileNameFactory,
-        OriginSystemInterface $originSystem
+        OriginSystemInterface $originSystem,
+        DestinationSystemInterface $destinationSystem
     ) {
         $this->fileNameFactory = $fileNameFactory;
         $this->originSystem = $originSystem;
+        $this->destinationSystem = $destinationSystem;
     }
 }
