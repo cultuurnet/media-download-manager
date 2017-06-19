@@ -34,11 +34,12 @@ class Parser implements ParserInterface
         $contents = utf8_encode($contents);
         $results = json_decode($contents, true);
 
-        $itemsPerPage = 30;
-        $totalItems = 95;
+        $itemsPerPage = $results['itemsPerPage'];
+        $totalItems = $results['totalItems'];
 
         $start = 0;
         while ($start < $totalItems) {
+            $temp = $this->originSystem->getSearchUrl() . 'start=' . $start;
             $contents = file_get_contents(Url::fromNative($this->originSystem->getSearchUrl() . 'start=' . $start));
             $contents = utf8_encode($contents);
             $results = json_decode($contents, true);
@@ -47,7 +48,6 @@ class Parser implements ParserInterface
 
             $start = $start + $itemsPerPage;
         }
-
     }
 
     /**
@@ -73,8 +73,12 @@ class Parser implements ParserInterface
     {
         foreach ($results['member'] as $member) {
             $name = $member['name']['nl'];
-            $postalCode = $member['location']['address']['postalCode'];
-            if ($member['mediaObject']) {
+            if ($member['@context'] == '/contexts/event') {
+                $postalCode = $member['location']['address']['postalCode'];
+            } elseif ($member['@context'] == '/contexts/place') {
+                $postalCode = $member['address']['postalCode'];
+            }
+            if (isset($member['mediaObject'])) {
                 foreach ($member['mediaObject'] as $media) {
                     $contentUrl = $media['contentUrl'];
                     $copyrightHolder = $media['copyrightHolder'];
