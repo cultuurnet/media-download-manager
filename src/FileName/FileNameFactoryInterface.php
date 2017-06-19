@@ -1,6 +1,6 @@
 <?php
 
-namespace CultuurNet\MediaDownloadManager\File;
+namespace CultuurNet\MediaDownloadManager\FileName;
 
 use ValueObjects\StringLiteral\StringLiteral;
 

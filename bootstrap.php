@@ -1,11 +1,10 @@
 <?php
 
+use CultuurNet\MediaDownloadManager\FileName\FileNameFactory;
 use CultuurNet\MediaDownloadManager\OriginSystem\OriginSystem;
 use CultuurNet\MediaDownloadManager\Parser\Parser;
 use DerAlex\Silex\YamlConfigServiceProvider;
 use Silex\Application;
-use ValueObjects\StringLiteral\StringLiteral;
-use ValueObjects\Structure\Dictionary;
 use ValueObjects\Web\Url;
 
 $app = new Application();
@@ -29,6 +28,12 @@ foreach ($app['config']['bootstrap'] as $identifier => $enabled) {
     }
 }
 
+$app['mdm.file_name_factory'] = $app->share(
+    function() {
+        return new FileNameFactory();
+    }
+);
+
 $app['mdm.origin'] = $app->share(
     function (Application $app) {
         $parameters = array();
@@ -46,7 +51,9 @@ $app['mdm.origin'] = $app->share(
 
 $app['mdm.parser'] = $app->share(
     function (Application $app) {
-        return new Parser($app['mdm.origin']);
+        return new Parser($app['mdm.file_name_factory'],
+            $app['mdm.origin']
+        );
     }
 );
 

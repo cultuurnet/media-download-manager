@@ -1,12 +1,11 @@
 <?php
 
-namespace CultuurNet\MediaDownloadManager\File;
+namespace CultuurNet\MediaDownloadManager\FileName;
 
 use ValueObjects\StringLiteral\StringLiteral;
 
 class FileNameFactory implements FileNameFactoryInterface
 {
-
     /**
      * @inheritdoc
      */
@@ -33,7 +32,6 @@ class FileNameFactory implements FileNameFactoryInterface
      */
     public function generateExtension($originalFileName)
     {
-        // TODO: Implement generateExtension() method.
-        return '';
+        return '.' . pathinfo($originalFileName, PATHINFO_EXTENSION);
     }
 }

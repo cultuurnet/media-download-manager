@@ -2,7 +2,7 @@
 
 namespace CultuurNet\MediaDownloadManager\DestinationSystem;
 
-use CultuurNet\MediaDownloadManager\File\FileNameFactoryInterface;
+use CultuurNet\MediaDownloadManager\FileName\FileNameFactoryInterface;
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Filesystem;
 use ValueObjects\StringLiteral\StringLiteral;
