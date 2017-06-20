@@ -37,10 +37,15 @@ class Parser implements ParserInterface
         $itemsPerPage = $results['itemsPerPage'];
         $totalItems = $results['totalItems'];
 
+        // temp solution until I figure out why pagination does not work.
+        if ($totalItems > $itemsPerPage) {
+            $limit = $totalItems;
+        }
+
         $start = 0;
         while ($start < $totalItems) {
-            $temp = $this->originSystem->getSearchUrl() . 'start=' . $start;
-            $contents = file_get_contents(Url::fromNative($this->originSystem->getSearchUrl() . 'start=' . $start));
+            $paginatedSearchUrl = (string) $this->originSystem->getSearchUrl() . 'start=' . $start . '&limit=' . $limit;
+            $contents = file_get_contents($paginatedSearchUrl);
             $contents = utf8_encode($contents);
             $results = json_decode($contents, true);
 
