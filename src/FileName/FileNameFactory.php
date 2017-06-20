@@ -1,12 +1,11 @@
 <?php
 
-namespace CultuurNet\MediaDownloadManager\File;
+namespace CultuurNet\MediaDownloadManager\FileName;
 
 use ValueObjects\StringLiteral\StringLiteral;
 
 class FileNameFactory implements FileNameFactoryInterface
 {
-
     /**
      * @inheritdoc
      */
@@ -25,7 +24,7 @@ class FileNameFactory implements FileNameFactoryInterface
             $copyright = StringLiteral::fromNative(substr($copyright->toNative(), 0, 100));
         }
 
-        return $itemName . ' - ' . $zipCode . ' - ' . $copyright . $extension;
+        return StringLiteral::fromNative($itemName . ' - ' . $zipCode . ' - ' . $copyright . $extension);
     }
 
     /**
@@ -33,7 +32,6 @@ class FileNameFactory implements FileNameFactoryInterface
      */
     public function generateExtension($originalFileName)
     {
-        // TODO: Implement generateExtension() method.
-        return '';
+        return '.' . pathinfo($originalFileName, PATHINFO_EXTENSION);
     }
 }

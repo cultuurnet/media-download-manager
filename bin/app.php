@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use CultuurNet\MediaDownloadManager\Console\FetchCommand;
 use Knp\Provider\ConsoleServiceProvider;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -19,5 +20,11 @@ $app->register(
 
 /** @var \Knp\Console\Application $consoleApp */
 $consoleApp = $app['console'];
+
+$consoleApp->add(
+    new FetchCommand(
+        $app['mdm.parser']
+    )
+);
 
 $consoleApp->run();
