@@ -16,21 +16,34 @@ class DestinationSystem implements DestinationSystemInterface
     protected $downloader;
 
     /**
-     * @var AbstractAdapter
+     * @var StringLiteral
      */
-    protected $adaptor;
+    protected $defaultFolder;
+
+    /**
+     * @var array
+     */
+    protected $adaptors;
 
     /**
      * DestinationSystem constructor.
      * @param DownloaderInterface $downloader
-     * @param AbstractAdapter $adaptor
+     * @param StringLiteral $defaultFolder
+     * @param array $adaptors
      */
     public function __construct(
         DownloaderInterface $downloader,
-        AbstractAdapter $adaptor
+        StringLiteral $defaultFolder,
+        array $adaptors
     ) {
         $this->downloader = $downloader;
-        $this->adaptor = $adaptor;
+        $this->defaultFolder = $defaultFolder;
+        $this->adaptors = array();
+        foreach ($adaptors as $adaptor) {
+            if ($adaptor instanceof AbstractAdapter) {
+                array_push($this->adaptors, $adaptor);
+            }
+        }
     }
 
     /**
@@ -38,11 +51,16 @@ class DestinationSystem implements DestinationSystemInterface
      */
     public function saveFile(Url $url, StringLiteral $destination)
     {
-        $putStream = $this->downloader->fetchStreamFromHttp($url);
-        $filesystem = new Filesystem($this->adaptor);
-        $filesystem->putStream($destination->toNative(), $putStream);
-        if (is_resource($putStream)) {
-            fclose($putStream);
+        if (!empty($this->defaultFolder)) {
+            $destination = new StringLiteral($this->defaultFolder . '/' . $destination);
+        }
+        foreach ($this->adaptors as $adaptor) {
+            $putStream = $this->downloader->fetchStreamFromHttp($url);
+            $filesystem = new Filesystem($adaptor);
+            $filesystem->putStream($destination->toNative(), $putStream);
+            if (is_resource($putStream)) {
+                fclose($putStream);
+            }
         }
     }
 }

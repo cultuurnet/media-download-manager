@@ -8,3 +8,17 @@ source_url:
     embed: true
     availableFrom: '*'
     availableTo: '*'
+
+destination:
+  default_folder: 'OMD'
+  local:
+    active: true
+    folder: '/path/to/folder'
+  dropbox:
+    active: false
+    authorizationToken: 'T0k3n'
+  ftp:
+    active: false
+    host: 'ftp://test.net'
+    username: 'ftp_user'
+    password: 'W@chtw00rd'

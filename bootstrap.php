@@ -6,8 +6,12 @@ use CultuurNet\MediaDownloadManager\FileName\FileNameFactory;
 use CultuurNet\MediaDownloadManager\OriginSystem\OriginSystem;
 use CultuurNet\MediaDownloadManager\Parser\Parser;
 use DerAlex\Silex\YamlConfigServiceProvider;
+use League\Flysystem\Adapter\Ftp;
 use League\Flysystem\Adapter\Local;
 use Silex\Application;
+use Srmklive\Dropbox\Adapter\DropboxAdapter;
+use Srmklive\Dropbox\Client\DropboxClient;
+use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 
 $app = new Application();
@@ -60,11 +64,31 @@ $app['mdm.downloader'] = $app->share(
 
 $app['mdm.destination'] = $app->share(
     function(Application $app) {
-        $adapter = new Local('/home/jonas/OMD');
+        $adapters = array();
+        if($app['config']['destination']['local']['active']) {
+            $localAdapter = new Local($app['config']['destination']['local']['folder']);
+            array_push($adapters, $localAdapter);
+        }
+        if($app['config']['destination']['dropbox']['active']) {
+            $client = new DropboxClient($app['config']['destination']['dropbox']['authorizationToken']);
+            $dropboxAdapter = new DropboxAdapter($client);
+            array_push($adapters, $dropboxAdapter);
+        }
+        if($app['config']['destination']['ftp']['active']) {
+            $ftpAdapter = new Ftp(
+                [
+                'host' => $app['config']['destination']['ftp']['host'],
+                'username' => $app['config']['destination']['ftp']['username'],
+                'password' => $app['config']['destination']['ftp']['password'],
+                ]
+            );
+            array_push($adapters, $ftpAdapter);
+        }
 
         return new DestinationSystem(
             $app['mdm.downloader'],
-            $adapter
+            new StringLiteral($app['config']['destination']['default_folder']),
+            $adapters
         );
     }
 );
