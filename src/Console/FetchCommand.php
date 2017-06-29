@@ -4,7 +4,9 @@ namespace CultuurNet\MediaDownloadManager\Console;
 
 use CultuurNet\MediaDownloadManager\Parser\ParserInterface;
 use Knp\Command\Command;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class FetchCommand extends Command
@@ -28,7 +30,14 @@ class FetchCommand extends Command
     {
         $this
             ->setName('mediadownloader')
-            ->setDescription('Start the importer by watching the folder.');
+            ->setDescription('Start the importer by watching the folder.')
+            ->setDefinition(
+                new InputDefinition(
+                    array(
+                        new InputOption('label', 'l', InputOption::VALUE_OPTIONAL),
+                    )
+                )
+            );
     }
 
     /**
@@ -36,6 +45,10 @@ class FetchCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->parser->start();
+        if ($input->getOption('label')) {
+            $this->parser->start($input->getOption('label'));
+        } else {
+            $this->parser->start();
+        }
     }
 }

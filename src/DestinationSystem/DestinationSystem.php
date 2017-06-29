@@ -62,5 +62,6 @@ class DestinationSystem implements DestinationSystemInterface
                 fclose($putStream);
             }
         }
+        usleep(1500000);
     }
 }
