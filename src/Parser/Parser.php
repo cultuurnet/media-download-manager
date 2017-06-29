@@ -28,9 +28,14 @@ class Parser implements ParserInterface
     /**
      * @inheritdoc
      */
-    public function start()
+    public function start($label = null)
     {
-        $contents = file_get_contents(Url::fromNative($this->originSystem->getSearchUrl()));
+        $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl());
+        if ($label) {
+            $nativeUrl = str_replace('owner-omd-2107', $label, $nativeUrl);
+        }
+
+        $contents = file_get_contents($nativeUrl);
         $contents = utf8_encode($contents);
         $results = json_decode($contents, true);
 
@@ -40,6 +45,8 @@ class Parser implements ParserInterface
         // temp solution until I figure out why pagination does not work.
         if ($totalItems > $itemsPerPage) {
             $limit = $totalItems;
+        } else {
+            $limit = 30;
         }
 
         $start = 0;
