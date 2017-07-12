@@ -85,11 +85,25 @@ class Parser implements ParserInterface
     {
         foreach ($results['member'] as $member) {
             $name = $member['name']['nl'];
+
             if ($member['@context'] == '/contexts/event') {
-                $postalCode = $member['location']['address']['postalCode'];
+                if (isset($member['location']['address']['postalCode'])) {
+                    $postalCode = $member['location']['address']['postalCode'];
+                } elseif (isset($member['location']['address']['nl']['postalCode'])) {
+                    $postalCode = $member['location']['address']['nl']['postalCode'];
+                } else {
+                    $postalCode = 'NULL';
+                }
             } elseif ($member['@context'] == '/contexts/place') {
-                $postalCode = $member['address']['postalCode'];
+                if (isset($member['address']['postalCode'])) {
+                    $postalCode = $member['address']['postalCode'];
+                } elseif (isset($member['address']['nl']['postalCode'])) {
+                    $postalCode = $member['address']['nl']['postalCode'];
+                } else {
+                    $postalCode = 'NULL';
+                }
             }
+
             if (isset($member['mediaObject'])) {
                 foreach ($member['mediaObject'] as $media) {
                     $contentUrl = $media['contentUrl'];
