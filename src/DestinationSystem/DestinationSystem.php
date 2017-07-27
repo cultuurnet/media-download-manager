@@ -55,11 +55,17 @@ class DestinationSystem implements DestinationSystemInterface
             $destination = new StringLiteral($this->defaultFolder . '/' . $destination);
         }
         foreach ($this->adaptors as $adaptor) {
-            $putStream = $this->downloader->fetchStreamFromHttp($url);
-            $filesystem = new Filesystem($adaptor);
-            $filesystem->putStream($destination->toNative(), $putStream);
-            if (is_resource($putStream)) {
-                fclose($putStream);
+            try {
+                $filesystem = new Filesystem($adaptor);
+                if (!$filesystem->has($destination)) {
+                    $putStream = $this->downloader->fetchStreamFromHttp($url);
+                    $filesystem->putStream($destination->toNative(), $putStream);
+                    if (is_resource($putStream)) {
+                        fclose($putStream);
+                    }
+                }
+            } catch (\Exception $exception) {
+                echo $exception;
             }
         }
         usleep(500000);
