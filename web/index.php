@@ -23,7 +23,7 @@ $app->get('/', function () {
     $output = '';
     $output .= '<form method="post">';
     $output .= 'label:&nbsp';
-    $output .= '<input type="text" name="tagfield" value="owner-omd-2107">';
+    $output .= '<input type="text" name="tagfield" value="owner-omd-2017">';
     $output .= '<br />';
     $output .= '<input type="submit" value="Download">';
     $output .= '</form>';
