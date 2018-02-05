@@ -28,7 +28,7 @@ class Parser implements ParserInterface
     /**
      * @inheritdoc
      */
-    public function start($label = null)
+    public function start($label = null, $createdSince = null)
     {
         $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl());
         if ($label) {
