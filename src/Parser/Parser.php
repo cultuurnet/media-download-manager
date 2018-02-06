@@ -3,13 +3,21 @@
 namespace CultuurNet\MediaDownloadManager\Parser;
 
 use CultuurNet\MediaDownloadManager\DestinationSystem\DestinationSystemInterface;
+use CultuurNet\MediaDownloadManager\Fetcher\FetcherInterface;
 use CultuurNet\MediaDownloadManager\FileName\FileNameFactoryInterface;
 use CultuurNet\MediaDownloadManager\OriginSystem\OriginSystemInterface;
+use Monolog\Logger;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 
 class Parser implements ParserInterface
 {
+
+    /**
+     * @var FetcherInterface
+     */
+    protected $fetcher;
+
     /**
      * @var FileNameFactoryInterface
      */
@@ -26,18 +34,27 @@ class Parser implements ParserInterface
     protected $destinationSystem;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @inheritdoc
      */
     public function start($label = null, $createdSince = null)
     {
+        $debugMessage = 'label is ';
+        $debugMessage .= isset($label) ? $label : 'NULL';
+        $debugMessage .= ' createdSince is';
+        $debugMessage .= isset($createdSince) ? $createdSince : 'NULL';
+        $this->logger->log(Logger::DEBUG, $debugMessage);
+
         $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl());
         if ($label) {
             $nativeUrl = str_replace('owner-omd-2107', $label, $nativeUrl);
         }
 
-        $contents = file_get_contents($nativeUrl);
-        $contents = utf8_encode($contents);
-        $results = json_decode($contents, true);
+        $results =  $this->fetcher->getEvents($nativeUrl);
 
         $itemsPerPage = $results['itemsPerPage'];
         $totalItems = $results['totalItems'];
@@ -52,9 +69,7 @@ class Parser implements ParserInterface
         $start = 0;
         while ($start < $totalItems) {
             $paginatedSearchUrl = (string) $this->originSystem->getSearchUrl() . 'start=' . $start . '&limit=' . $limit;
-            $contents = file_get_contents($paginatedSearchUrl);
-            $contents = utf8_encode($contents);
-            $results = json_decode($contents, true);
+            $results = $this->fetcher->getEvents($paginatedSearchUrl);
 
             $this->processResults($results);
 
@@ -64,18 +79,24 @@ class Parser implements ParserInterface
 
     /**
      * Parser constructor.
+     * @param FetcherInterface $fetcher
      * @param FileNameFactoryInterface $fileNameFactory
      * @param OriginSystemInterface $originSystem
      * @param DestinationSystemInterface $destinationSystem
+     * @param Logger $logger
      */
     public function __construct(
+        FetcherInterface $fetcher,
         FileNameFactoryInterface $fileNameFactory,
         OriginSystemInterface $originSystem,
-        DestinationSystemInterface $destinationSystem
+        DestinationSystemInterface $destinationSystem,
+        Logger $logger
     ) {
+        $this->fetcher = $fetcher;
         $this->fileNameFactory = $fileNameFactory;
         $this->originSystem = $originSystem;
         $this->destinationSystem = $destinationSystem;
+        $this->logger = $logger;
     }
 
     /**

@@ -35,6 +35,7 @@ class FetchCommand extends Command
                 new InputDefinition(
                     array(
                         new InputOption('label', 'l', InputOption::VALUE_OPTIONAL),
+                        new InputOption('createdSince', 'c', InputOption::VALUE_OPTIONAL),
                     )
                 )
             );
@@ -45,10 +46,9 @@ class FetchCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('label')) {
-            $this->parser->start($input->getOption('label'));
-        } else {
-            $this->parser->start();
-        }
+        $label = $input->getOption('label');
+        $createdSince = $input->getOption('createdSince');
+
+        $this->parser->start($label, $createdSince);
     }
 }
