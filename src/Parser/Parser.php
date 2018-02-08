@@ -45,16 +45,16 @@ class Parser implements ParserInterface
     {
         $debugMessage = 'label is ';
         $debugMessage .= isset($label) ? $label : 'NULL';
-        $debugMessage .= ' createdSince is';
+        $debugMessage .= ' createdSince is ';
         $debugMessage .= isset($createdSince) ? $createdSince : 'NULL';
         $this->logger->log(Logger::DEBUG, $debugMessage);
 
         $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl());
         if ($label) {
-            $nativeUrl = str_replace('owner-omd-2107', $label, $nativeUrl);
+            $nativeUrl = str_replace('owner-omd-2018', $label, $nativeUrl);
         }
 
-        $results =  $this->fetcher->getEvents($nativeUrl);
+        $results =  $this->fetcher->getEvents((string) $nativeUrl);
 
         $itemsPerPage = $results['itemsPerPage'];
         $totalItems = $results['totalItems'];

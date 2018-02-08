@@ -5,36 +5,48 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Silex\Application;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Silex\Provider\TwigServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /** @var Application $app */
 $app = require __DIR__ . '/../bootstrap.php';
 
-$app['twig.path'] = array(__DIR__.'/../templates');
-$app['twig.options'] = array('cache' => __DIR__.'/../var/cache/twig');
+$app->register(new TwigServiceProvider(), array(
+    'twig.path' => __DIR__.'/../views'
+));
 
 /**
  * Allow to use services as controllers.
  */
 $app->register(new ServiceControllerServiceProvider());
 
-$app->get('/', function () {
-    $output = '';
-    $output .= '<form method="post">';
-    $output .= 'label:&nbsp';
-    $output .= '<input type="text" name="tagfield" value="owner-omd-2017">';
-    $output .= '<br />';
-    $output .= '<input type="submit" value="Download">';
-    $output .= '</form>';
-
-    return $output;
+$app->get('/', function () use ($app) {
+    return $app['twig']->render('index.html');
 });
 
-$app->post('/', function (Request $request) {
+$app->get('/{variable}', function ($variable) use ($app) {
+    return $app['twig']->render('index.html', array('variable' => $variable));
+});
+
+$app->post('/', function (Request $request) use ($app) {
     $tagfield = $request->get('tagfield');
-    exec('../bin/app.php mediadownloader --label '. $tagfield . ' > /dev/null &');
-    return new Response('Pictures of events with label ' . $tagfield . ' will be downloaded to dropbox.', 201);
+    $createdfield = $request->get('createdfield');
+
+    $command = '../bin/app.php mediadownloader ';
+    $command .= ' --label \'' . $tagfield . '\' ';
+    if (isset($createdfield) && !empty($createdfield)) {
+        $command .=  ' --createdSince ' . $createdfield;
+    }
+    $command .= ' > /dev/null &';
+    exec($command);
+
+    return $app['twig']->render(
+        'response.html',
+        array(
+            'tag' => $tagfield,
+            'created' => $createdfield,
+            'command' => $command)
+    );
 });
 
 $app->register(new FormServiceProvider());
