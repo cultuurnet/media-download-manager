@@ -30,7 +30,7 @@ class FetchCommand extends Command
     {
         $this
             ->setName('mediadownloader')
-            ->setDescription('Start the importer by watching the folder.')
+            ->setDescription('Start the import.')
             ->setDefinition(
                 new InputDefinition(
                     array(

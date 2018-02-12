@@ -44,8 +44,8 @@ $app->post('/', function (Request $request) use ($app) {
         'response.html',
         array(
             'tag' => $tagfield,
-            'created' => $createdfield,
-            'command' => $command)
+            'created' => $createdfield
+        )
     );
 });
 
