@@ -71,29 +71,21 @@ body {
 }
 
 /* ===================
-    ALL: Orange Theme
+    ALL: Transparent Theme
    =================== */
-
-.header-container {
-    border-bottom: 20px solid #e44d26;
-}
 
 .footer-container,
 .main aside {
     border-top: 20px solid #e44d26;
 }
 
-.header-container,
-.footer-container,
-.main aside {
-    background: #f16529;
-}
-
 .interaction {
-  position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
 }
 
 .title {
