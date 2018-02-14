@@ -56,6 +56,7 @@ class Parser implements ParserInterface
 
         $itemsPerPage = $results['itemsPerPage'];
         $totalItems = $results['totalItems'];
+        $this->logger->log(Logger::DEBUG, 'Found ' . $totalItems . ' events');
 
         // temp solution until I figure out why pagination does not work.
         if ($totalItems > $itemsPerPage) {
