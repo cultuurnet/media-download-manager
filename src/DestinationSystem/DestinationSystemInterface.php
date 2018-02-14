@@ -10,7 +10,7 @@ interface DestinationSystemInterface
     /**
      * @param Url $url
      * @param StringLiteral $destination
-     * @return
+     * @return void
      */
     public function saveFile(Url $url, StringLiteral $destination);
 }

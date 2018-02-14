@@ -7,7 +7,8 @@ interface ParserInterface
     /**
      * Starts the parser
      * @param string | null $label
-     * @return
+     * @param string | null $createdSince
+     * @return void
      */
-    public function start($label = null);
+    public function start($label = null, $createdSince = null);
 }
