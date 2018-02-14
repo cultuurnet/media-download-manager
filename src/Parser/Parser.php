@@ -49,10 +49,8 @@ class Parser implements ParserInterface
         $debugMessage .= isset($createdSince) ? $createdSince : 'NULL';
         $this->logger->log(Logger::DEBUG, $debugMessage);
 
-        $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl());
-        if ($label) {
-            $nativeUrl = str_replace('owner-omd-2018', $label, $nativeUrl);
-        }
+        $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl($label, $createdSince));
+        $this->logger->log(Logger::DEBUG, (string) $nativeUrl);
 
         $results =  $this->fetcher->getEvents((string) $nativeUrl);
 
@@ -68,7 +66,7 @@ class Parser implements ParserInterface
 
         $start = 0;
         while ($start < $totalItems) {
-            $paginatedSearchUrl = (string) $this->originSystem->getSearchUrl() . 'start=' . $start . '&limit=' . $limit;
+            $paginatedSearchUrl = (string) $this->originSystem->getSearchUrl($label, $createdSince) . 'start=' . $start . '&limit=' . $limit;
             $results = $this->fetcher->getEvents($paginatedSearchUrl);
 
             $this->processResults($results);

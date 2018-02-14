@@ -72,7 +72,7 @@ $app['mdm.origin'] = $app->share(
         $parameters = array();
 
         foreach ($app['config']['source_url']['parameters'] as $key => $value) {
-            $parameters[$key] = urlencode($value);
+            $parameters[$key] = $value;
         }
 
         return new OriginSystem(
