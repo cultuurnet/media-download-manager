@@ -29,14 +29,20 @@ class OriginSystem implements OriginSystemInterface
     }
 
     /**
-     * @return Url
+     * @inheritdoc
      */
-    public function getSearchUrl()
+    public function getSearchUrl($label, $createdFrom)
     {
         $urlString = $this->baseUrl . '/?';
         $parameterString = '';
         foreach ($this->parameters as $key => $value) {
-            $parameterString .= $key . '=' . $value . '&';
+            if ($key == 'q') {
+                $value = 'labels:"' . (isset($label) ? $label : $value) . '"';
+            }
+            if ($key == 'createdFrom' && isset($createdFrom)) {
+                $value = $createdFrom . 'T00:00:00+02:00';
+            }
+            $parameterString .= $key . '=' . urlencode($value) . '&';
         }
         return Url::fromNative($urlString . $parameterString);
     }

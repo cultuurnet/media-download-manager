@@ -2,12 +2,15 @@
 
 use CultuurNet\MediaDownloadManager\DestinationSystem\DestinationSystem;
 use CultuurNet\MediaDownloadManager\Download\Downloader;
+use CultuurNet\MediaDownloadManager\Fetcher\Fetcher;
 use CultuurNet\MediaDownloadManager\FileName\FileNameFactory;
 use CultuurNet\MediaDownloadManager\OriginSystem\OriginSystem;
 use CultuurNet\MediaDownloadManager\Parser\Parser;
 use DerAlex\Silex\YamlConfigServiceProvider;
 use League\Flysystem\Adapter\Ftp;
 use League\Flysystem\Adapter\Local;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
 use Silex\Application;
 use Srmklive\Dropbox\Adapter\DropboxAdapter;
 use Srmklive\Dropbox\Client\DropboxClient;
@@ -35,6 +38,29 @@ foreach ($app['config']['bootstrap'] as $identifier => $enabled) {
     }
 }
 
+$app['log_handler_parser'] = $app->share(
+    function (Application $app) {
+        return new RotatingFileHandler(
+            $app['config']['logging_folder'] . '/parser.log',
+            365,
+            Logger::DEBUG
+        );
+    }
+);
+
+$app['logger_parser'] = $app->share(
+    function (Application $app) {
+        return new Logger('importer', array($app['log_handler_parser']));
+    }
+);
+
+$app['mdm.fetcher'] = $app->share(
+    function (Application $app) {
+        return new Fetcher($app['config']['source_url']['api_key']);
+
+    }
+);
+
 $app['mdm.file_name_factory'] = $app->share(
     function() {
         return new FileNameFactory();
@@ -46,7 +72,7 @@ $app['mdm.origin'] = $app->share(
         $parameters = array();
 
         foreach ($app['config']['source_url']['parameters'] as $key => $value) {
-            $parameters[$key] = urlencode($value);
+            $parameters[$key] = $value;
         }
 
         return new OriginSystem(
@@ -96,9 +122,11 @@ $app['mdm.destination'] = $app->share(
 $app['mdm.parser'] = $app->share(
     function (Application $app) {
         return new Parser(
+            $app['mdm.fetcher'],
             $app['mdm.file_name_factory'],
             $app['mdm.origin'],
-            $app['mdm.destination']
+            $app['mdm.destination'],
+            $app['logger_parser']
         );
     }
 );

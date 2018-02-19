@@ -7,7 +7,9 @@ use ValueObjects\Web\Url;
 interface OriginSystemInterface
 {
     /**
+     * @param $label
+     * @param $createdFrom
      * @return Url
      */
-    public function getSearchUrl();
+    public function getSearchUrl($label, $createdFrom);
 }

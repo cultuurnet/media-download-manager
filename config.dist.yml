@@ -1,8 +1,11 @@
 debug: false
 bootstrap: []
 
+logging_folder: '/Path/to/log/'
+
 source_url:
   base_url: https://search-acc.uitdatabank.be/offers
+  api_key: uuid
   parameters:
     q: 'labels:"owner-omd-2107"'
     embed: true
