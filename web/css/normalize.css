@@ -7,7 +7,7 @@
  */
 
 html {
-  font-family: sans-serif; /* 1 */
+  font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif ; /* 1 */
   -ms-text-size-adjust: 100%; /* 2 */
   -webkit-text-size-adjust: 100%; /* 2 */
 }
@@ -116,7 +116,7 @@ abbr[title] {
 
 b,
 strong {
-  font-weight: bold;
+  font-weight: normal;
 }
 
 /**
@@ -230,7 +230,7 @@ code,
 kbd,
 pre,
 samp {
-  font-family: monospace, monospace;
+  font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 1em;
 }
 
@@ -408,7 +408,7 @@ textarea {
  */
 
 optgroup {
-  font-weight: bold;
+  font-weight: normal;
 }
 
 /* Tables

@@ -1,7 +1,7 @@
 /*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
 
 html {
-    color: #222;
+    color: #404040;
     font-size: 1em;
     line-height: 1.4;
     background: url("/img/Spiegelzaal_Paleis_op_de_Meir_Tom_Dorau.jpg") no-repeat center center fixed;
@@ -56,13 +56,18 @@ textarea {
     padding: 0.2em 0;
 }
 
+h1,
+h3 {
+    font-weight: 700;
+}
+
 
 /* ===== Initializr Styles ==================================================
    Author: Jonathan Verrecchia - verekia.com/initializr/responsive-template
    ========================================================================== */
 
 body {
-    font: 16px/26px Helvetica, Helvetica Neue, Arial;
+    font: 16px/26px "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 .wrapper {
@@ -89,7 +94,7 @@ body {
 }
 
 .title {
-    color: white;
+    color: #404040;
 }
 
 /* ==============
