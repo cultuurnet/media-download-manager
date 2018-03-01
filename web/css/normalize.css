@@ -293,6 +293,8 @@ input[type="reset"],
 input[type="submit"] {
   -webkit-appearance: button; /* 2 */
   cursor: pointer; /* 3 */
+  padding: 6px 12px;
+  margin-top: 50px;
 }
 
 /**
