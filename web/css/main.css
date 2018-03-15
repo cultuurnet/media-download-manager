@@ -4,7 +4,7 @@ html {
     color: #404040;
     font-size: 1em;
     line-height: 1.4;
-    background: url("/img/Spiegelzaal_Paleis_op_de_Meir_Tom_Dorau.jpg") no-repeat center center fixed;
+    background: url("/img/dok_gent.png") no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -86,7 +86,7 @@ body {
 
 .interaction {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
