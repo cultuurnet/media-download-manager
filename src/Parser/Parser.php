@@ -51,9 +51,9 @@ class Parser implements ParserInterface
             $this->logger->log(Logger::DEBUG, $debugMessage);
 
             $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl($label, $createdSince));
-            $this->logger->log(Logger::DEBUG, (string)$nativeUrl);
+            $this->logger->log(Logger::DEBUG, (string) $nativeUrl);
 
-            $results = $this->fetcher->getEvents((string)$nativeUrl);
+            $results = $this->fetcher->getEvents((string) $nativeUrl);
 
             $itemsPerPage = $results['itemsPerPage'];
             $totalItems = $results['totalItems'];
@@ -68,7 +68,7 @@ class Parser implements ParserInterface
 
             $start = 0;
             while ($start < $totalItems) {
-                $paginatedSearchUrl = (string)$this->originSystem->getSearchUrl($label, $createdSince) . 'start=' . $start . '&limit=' . $limit;
+                $paginatedSearchUrl = (string) $this->originSystem->getSearchUrl($label, $createdSince) . 'start=' . $start . '&limit=' . $limit;
                 $results = $this->fetcher->getEvents($paginatedSearchUrl);
 
                 $this->processResults($results);
