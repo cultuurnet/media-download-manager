@@ -43,36 +43,41 @@ class Parser implements ParserInterface
      */
     public function start($label = null, $createdSince = null)
     {
-        $debugMessage = 'label is ';
-        $debugMessage .= isset($label) ? $label : 'NULL';
-        $debugMessage .= ' createdSince is ';
-        $debugMessage .= isset($createdSince) ? $createdSince : 'NULL';
-        $this->logger->log(Logger::DEBUG, $debugMessage);
+        try {
+            $debugMessage = 'label is ';
+            $debugMessage .= isset($label) ? $label : 'NULL';
+            $debugMessage .= ' createdSince is ';
+            $debugMessage .= isset($createdSince) ? $createdSince : 'NULL';
+            $this->logger->log(Logger::DEBUG, $debugMessage);
 
-        $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl($label, $createdSince));
-        $this->logger->log(Logger::DEBUG, (string) $nativeUrl);
+            $nativeUrl = Url::fromNative($this->originSystem->getSearchUrl($label, $createdSince));
+            $this->logger->log(Logger::DEBUG, (string) $nativeUrl);
 
-        $results =  $this->fetcher->getEvents((string) $nativeUrl);
+            $results = $this->fetcher->getEvents((string) $nativeUrl);
 
-        $itemsPerPage = $results['itemsPerPage'];
-        $totalItems = $results['totalItems'];
-        $this->logger->log(Logger::DEBUG, 'Found ' . $totalItems . ' events');
+            $itemsPerPage = $results['itemsPerPage'];
+            $totalItems = $results['totalItems'];
+            $this->logger->log(Logger::DEBUG, 'Found ' . $totalItems . ' events');
 
-        // temp solution until I figure out why pagination does not work.
-        if ($totalItems > $itemsPerPage) {
-            $limit = $totalItems;
-        } else {
-            $limit = 30;
-        }
+            // temp solution until I figure out why pagination does not work.
+            if ($totalItems > $itemsPerPage) {
+                $limit = $totalItems;
+            } else {
+                $limit = 30;
+            }
 
-        $start = 0;
-        while ($start < $totalItems) {
-            $paginatedSearchUrl = (string) $this->originSystem->getSearchUrl($label, $createdSince) . 'start=' . $start . '&limit=' . $limit;
-            $results = $this->fetcher->getEvents($paginatedSearchUrl);
+            $start = 0;
+            while ($start < $totalItems) {
+                $paginatedSearchUrl = (string) $this->originSystem->getSearchUrl($label, $createdSince) . 'start=' . $start . '&limit=' . $limit;
+                $results = $this->fetcher->getEvents($paginatedSearchUrl);
 
-            $this->processResults($results);
+                $this->processResults($results);
 
-            $start = $start + $itemsPerPage;
+                $start = $start + $itemsPerPage;
+            }
+        } catch (\Exception $exception) {
+            $this->logger->log(Logger::ERROR, $exception->getTraceAsString());
+            $this->logger->log(Logger::ERROR, $exception->getMessage());
         }
     }
 
