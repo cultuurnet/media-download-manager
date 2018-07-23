@@ -3,6 +3,7 @@
 namespace CultuurNet\MediaDownloadManager\Fetcher;
 
 use Guzzle\Http\Client;
+use Monolog\Logger;
 
 class Fetcher implements FetcherInterface
 {
@@ -12,11 +13,20 @@ class Fetcher implements FetcherInterface
     private $apiKey;
 
     /**
-     * Fetcher constructor.
+     * @var Logger
      */
-    public function __construct($apiKey)
+    private $logger;
+
+    /**
+     * Fetcher constructor.
+     * @param $apiKey
+     * @param Logger $logger
+     */
+    public function __construct($apiKey, Logger $logger)
     {
         $this->apiKey = $apiKey;
+        $this->logger = $logger;
+
     }
 
     /**
@@ -25,7 +35,9 @@ class Fetcher implements FetcherInterface
      */
     public function getEvents($url)
     {
+        $this->logger->log(Logger::DEBUG, $url);
         $client = new Client();
+        $this->logger->log(Logger::DEBUG, 'one');
         $request = $client->get(
             $url,
             [
@@ -34,10 +46,12 @@ class Fetcher implements FetcherInterface
             ],
             []
         );
+        $this->logger->log(Logger::DEBUG, 'two');
 
         $response = $request->send();
-
+        $this->logger->log(Logger::DEBUG, 'three');
         $body = $response->getBody();
+        $this->logger->log(Logger::DEBUG, $body);
 
         $eventList = json_decode($body, true);
         return $eventList;

@@ -54,9 +54,28 @@ $app['logger_parser'] = $app->share(
     }
 );
 
+$app['log_fetcher_handler_parser'] = $app->share(
+    function (Application $app) {
+        return new RotatingFileHandler(
+            $app['config']['logging_folder'] . '/fetcher.log',
+            365,
+            Logger::DEBUG
+        );
+    }
+);
+
+$app['logger_fetcher_parser'] = $app->share(
+    function (Application $app) {
+        return new Logger('fetcher', array($app['log_fetcher_handler_parser']));
+    }
+);
+
 $app['mdm.fetcher'] = $app->share(
     function (Application $app) {
-        return new Fetcher($app['config']['source_url']['api_key']);
+        return new Fetcher(
+            $app['config']['source_url']['api_key'],
+            $app['logger_fetcher_parser']
+        );
 
     }
 );
