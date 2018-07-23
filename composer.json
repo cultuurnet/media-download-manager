@@ -15,6 +15,7 @@
         "twitter/bootstrap": "^3.3.6",
         "deralex/yaml-config-service-provider": "~1.0",
         "knplabs/console-service-provider": "~1.0",
+        "guzzle/guzzle": "^2.8 || ^3.0",
         "monolog/monolog": "~1.11",
         "cultuurnet/valueobjects": "~3.0",
         "league/flysystem": "~1.0",
