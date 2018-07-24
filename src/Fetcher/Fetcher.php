@@ -51,7 +51,7 @@ class Fetcher implements FetcherInterface
         $response = $request->send();
         $this->logger->log(Logger::DEBUG, 'three');
         $body = $response->getBody();
-        $this->logger->log(Logger::DEBUG, $body);
+        // $this->logger->log(Logger::DEBUG, $body);
 
         $eventList = json_decode($body, true);
         return $eventList;

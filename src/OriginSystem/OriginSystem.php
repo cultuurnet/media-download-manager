@@ -42,6 +42,9 @@ class OriginSystem implements OriginSystemInterface
             if ($key == 'createdFrom' && isset($createdFrom)) {
                 $value = $createdFrom . 'T00:00:00+02:00';
             }
+            if ($key == 'createdFrom' && !isset($createdFrom)) {
+                $value = $value . 'T00:00:00+02:00';
+            }
             $parameterString .= $key . '=' . urlencode($value) . '&';
         }
         return Url::fromNative($urlString . $parameterString);
