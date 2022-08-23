@@ -70,6 +70,22 @@ $app['logger_fetcher_parser'] = $app->share(
     }
 );
 
+$app['log_handler_destination'] = $app->share(
+    function (Application $app) {
+        return new RotatingFileHandler(
+            $app['config']['logging_folder'] . '/destination.log',
+            365,
+            Logger::DEBUG
+        );
+    }
+);
+
+$app['logger_destination'] = $app->share(
+    function (Application $app) {
+        return new Logger('destination', array($app['log_handler_destination']));
+    }
+);
+
 $app['mdm.fetcher'] = $app->share(
     function (Application $app) {
         return new Fetcher(
@@ -133,7 +149,8 @@ $app['mdm.destination'] = $app->share(
         return new DestinationSystem(
             $app['mdm.downloader'],
             new StringLiteral($app['config']['destination']['default_folder']),
-            $adapters
+            $adapters,
+            $app['logger_destination']
         );
     }
 );
