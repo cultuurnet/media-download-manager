@@ -59,12 +59,13 @@ class Parser implements ParserInterface
             $totalItems = $results['totalItems'];
             $this->logger->log(Logger::DEBUG, 'Found ' . $totalItems . ' events');
 
+            $limit = 30;
             // temp solution until I figure out why pagination does not work.
-            if ($totalItems > $itemsPerPage) {
+            /*if ($totalItems > $itemsPerPage) {
                 $limit = $totalItems;
             } else {
                 $limit = 30;
-            }
+            }*/
 
             $start = 0;
             while ($start < $totalItems) {

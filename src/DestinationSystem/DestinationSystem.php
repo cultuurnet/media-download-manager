@@ -5,6 +5,7 @@ namespace CultuurNet\MediaDownloadManager\DestinationSystem;
 use CultuurNet\MediaDownloadManager\Download\DownloaderInterface;
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Filesystem;
+use Monolog\Logger;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 
@@ -26,15 +27,22 @@ class DestinationSystem implements DestinationSystemInterface
     protected $adaptors;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * DestinationSystem constructor.
      * @param DownloaderInterface $downloader
      * @param StringLiteral $defaultFolder
      * @param array $adaptors
+     * @param Logger $logger
      */
     public function __construct(
         DownloaderInterface $downloader,
         StringLiteral $defaultFolder,
-        array $adaptors
+        array $adaptors,
+        Logger $logger
     ) {
         $this->downloader = $downloader;
         $this->defaultFolder = $defaultFolder;
@@ -44,6 +52,7 @@ class DestinationSystem implements DestinationSystemInterface
                 array_push($this->adaptors, $adaptor);
             }
         }
+        $this->logger = $logger;
     }
 
     /**
@@ -51,6 +60,8 @@ class DestinationSystem implements DestinationSystemInterface
      */
     public function saveFile(Url $url, StringLiteral $destination)
     {
+        $url = $this->refactorUrl($url);
+        $this->logger->log(Logger::DEBUG, $destination->toNative());
         if (!empty($this->defaultFolder)) {
             $destination = new StringLiteral($this->defaultFolder . '/' . $destination);
         }
@@ -68,6 +79,21 @@ class DestinationSystem implements DestinationSystemInterface
                 echo $exception;
             }
         }
-        usleep(500000);
+        usleep(1000000);
+    }
+
+    /**
+     * @param Url $url
+     * @return Url
+     */
+    private function refactorUrl(Url $url)
+    {
+        $urlString = (string) $url;
+        $urlString = str_replace(
+            'https://images.uitdatabank.be/',
+            'https://images-prod-uitdatabank.imgix.net/',
+            $urlString
+        );
+        return Url::fromNative($urlString);
     }
 }
